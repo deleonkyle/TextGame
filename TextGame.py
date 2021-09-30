@@ -6,7 +6,7 @@ g_slime_attack = random.randint(6, 20)
 shadow_assassin_attack = random.randint(15, 25)
 character_health = 100
 item = ""
-
+inventory = []
 
 name = input("Username: ")
 print("You're awake adventurer [" + name +"]")
@@ -20,7 +20,7 @@ while character_health > 0:
         else:
             print("Your character [" + name +"] health is back to " + str(character_health))
 
-    v = int(input("Enter |1| to Cross the River\nEnter |2| to Jump into the Ravine\nEnter |3| to fight the Monster in the Dungeon \nInput: "))
+    v = int(input("Enter |1| to Cross the River\nEnter |2| to Jump into the Ravine\nEnter |3| to fight the Monster in the Dungeon\nEnter [4] to perform Alchemy\nInput: "))
 
     # Start of Journey
     if v == 1:
@@ -86,6 +86,7 @@ while character_health > 0:
                     time.sleep(2)
                     print("You [" + name +"] have defeated the Green Slime")
                     print("The Green Slime dropped Green Goo - used to make a lesser potion")
+                    inventory.append("goo")
                     time.sleep(2)
                     print("You [" + name +"] have leveled up! \nYour Health has been restored")
                     character_health = 100
@@ -153,7 +154,8 @@ while character_health > 0:
                                     print("You  [" + name +"] received " + str(shadow_assassin_attack) + " Damage")
                                     print("Your character's Health: " + str(character_health))
                                     if shadow_assassin_hp <= 0:
-                                        print("You [" + name + "] have defeated the Shadow Assassin\nThe Shadow Assassin dropped Ninja Stars - a hidden weapon used by Shadow Assassin to attack")
+                                        inventory.append("key")
+                                        print("You [" + name + "] have defeated the Shadow Assassin\nThe Shadow Assassin dropped Key - use to unlock the hidden Treasure Chest")
                                         time.sleep(2)
                                         print("You [" + name +"] have leveled up! \nYour Health has been restored")
                                         character_health = 100
@@ -176,7 +178,8 @@ while character_health > 0:
                                         print("You [" + name +"] received " + str(shadow_assassin_attack) + " Damage")
                                         print("Your character's Health: " + str(character_health))
                                         if shadow_assassin_hp <= 0:
-                                            print("You have defeated the Shadow Assassin\nThe Shadow Assassin dropped Ninja Stars - a hidden weapon used by Shadow Assassin to attack")
+                                            print("You have defeated the Shadow Assassin\nThe Shadow Assassin dropped a Key - use to unlock the hidden Treasure Chest")
+                                            inventory.append("key")
                                             time.sleep(2)
                                             print("You [" + name +"] have leveled up! \nYour Health has been restored")
                                             character_health = 100
@@ -184,13 +187,18 @@ while character_health > 0:
 
         elif dungeon == "M":
             print("You [" + name +"] found a Treasure chest")
+            in_lock = True
             middle = input("|O| to Open the chest, |D| to Destroy the chest \n"
                            "Input: ")
-            if middle == "O":
-                print("You [" + name +"] have acquired the Greater Potion ")
+            if middle == "O" and ("key") not in inventory:
+                print("You need to find the Key")
+
+            elif middle == "O" and ("key") in inventory:
+                print("The Treasure chest has been opened\nYou [" + name +"] have acquired the Greater Potion")
+                inventory.remove("key")
+                print("Greater Potion - A potion that restore your health back to full")
                 m1 = input("Do you want to Drink or Donate it? Enter |GLUP| to Drink |DONO| to Donate\nInput: ")
                 if m1 == "GLUP":
-                    print("Greater Potion - A potion that restore your health back to full")
                     character_health = 100
                 elif m1 == "DONO":
                     print("The Greater Potion has been donated to the Orphanage lmao")
@@ -210,6 +218,27 @@ while character_health > 0:
             print("Your character's Health: " + str(character_health))
             if character_health <= 0:
                 print("you ded lmao\nGAME OVER")
+
+    elif v == 4:
+        crafting = input("Do you want to make Potion?\n|Y|es or |N|o\nInput: ")
+        if crafting == "Y" and ("goo") not in inventory:
+            print("You don't have Green Goo to perform Alchemy")
+        elif crafting == "Y" and ("goo") in inventory:
+            print("Alchemy processing.....")
+            time.sleep(2)
+            lesser_potion = random.randint(0, 9)
+            if lesser_potion < 7:
+                inventory = "Lesser Potion"
+                inventory.remove("goo")
+                print("You successfully made a Lesser Potion")
+                les = input("Drink the Lesser Potion? |Y|es or |N|o\nInput:")
+                if les == "Y":
+                    character_health = character_health + 20
+                    print("Your character's Health: " + str(character_health))
+                else:
+                    print("Lesser Potion has been stored at [" + name +"]'s Inventory")
+            else:
+                print("You failed to make a Lesser Potion")
 
     else:
         print("Invalid input")
